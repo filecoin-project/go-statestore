@@ -7,7 +7,7 @@ require (
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190812055157-5d271430af9f // indirect
 	github.com/ipfs/go-cid v0.0.4-0.20191112011718-79e75dffeb10 // indirect
-	github.com/ipfs/go-datastore v0.3.1
+	github.com/ipfs/go-datastore v0.1.1
 	github.com/jbenet/goprocess v0.1.3 // indirect
 	github.com/minio/sha256-simd v0.1.1 // indirect
 	github.com/polydawn/refmt v0.0.0-20190809202753-05966cbd336a // indirect
