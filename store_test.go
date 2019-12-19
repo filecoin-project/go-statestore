@@ -5,9 +5,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/ipfs/go-datastore"
-
 	"github.com/filecoin-project/go-cbor-util"
+	"github.com/ipfs/go-datastore"
 )
 
 type Flarp struct {
