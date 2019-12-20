@@ -65,7 +65,7 @@ func TestList(t *testing.T) {
 	}
 
 	if len(out) != 2 {
-		t.Fatalf("wrong len (expected %d, got %d)", 1, len(out))
+		t.Fatalf("wrong len (expected %d, got %d)", 2, len(out))
 	}
 
 	blargs := make(map[string]bool)
@@ -74,7 +74,7 @@ func TestList(t *testing.T) {
 	}
 
 	if !blargs[fmt.Sprintf("%d", x1)] {
-		t.Fatalf("wrong data (missing Flarp#Blarg() == %d)", x2)
+		t.Fatalf("wrong data (missing Flarp#Blarg() == %d)", x1)
 	}
 
 	if !blargs[fmt.Sprintf("%d", x2)] {
