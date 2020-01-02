@@ -6,37 +6,33 @@ executors:
   golang:
     docker:
       - image: circleci/golang:1.13
-    resource_class: small
 
 commands:
   install-deps:
     steps:
       - go/install-ssh
       - go/install: {package: git}
-  prepare:
-    parameters:
-      linux:
-        default: true
-        description: is a linux build environment?
-        type: boolean
-    steps:
-      - checkout
-      - when:
-          condition: << parameters.linux >>
-          steps:
-            - run: sudo apt-get update
-            - run: sudo apt-get install ocl-icd-opencl-dev
-  build-all:
-
 
 jobs:
   mod-tidy-check:
     executor: golang
     steps:
       - install-deps
-      - prepare
+      - checkout
       - go/mod-download
       - go/mod-tidy-check
+
+  build-all:
+    executor: golang
+    steps:
+      - install-deps
+      - checkout
+      - go/mod-download
+      - restore_cache:
+          name: restore go mod cache
+          key: v1-go-deps-{{ arch }}-{{ checksum "/home/circleci/project/go.mod" }}
+      - run:
+          command: make build
 
   test: &test
     description: |
@@ -47,7 +43,7 @@ jobs:
         default: golang
       go-test-flags:
         type: string
-        default: "-timeout 5m"
+        default: "-timeout 30m"
         description: Flags passed to go test.
       packages:
         type: string
@@ -74,7 +70,7 @@ jobs:
     executor: << parameters.executor >>
     steps:
       - install-deps
-      - prepare
+      - checkout
       - go/mod-download
       - restore_cache:
           name: restore go mod cache
@@ -82,7 +78,7 @@ jobs:
       - go/install-gotestsum:
           gobin: $HOME/.local/bin
       - run:
-          name: go test
+          name: make test
           environment:
             GOTESTSUM_JUNITFILE: /tmp/test-reports/<< parameters.test-suite-name >>/junit.xml
             GOTESTSUM_FORMAT: << parameters.gotestsum-format >>
@@ -121,7 +117,7 @@ jobs:
         default: golang
       golangci-lint-version:
         type: string
-        default: 1.21.0
+        default: 1.17.1
       concurrency:
         type: string
         default: '2'
@@ -136,7 +132,8 @@ jobs:
     executor: << parameters.executor >>
     steps:
       - install-deps
-      - prepare
+      - checkout
+      - go/mod-download
       - go/install-golangci-lint:
           gobin: $HOME/.local/bin
           version: << parameters.golangci-lint-version >>
@@ -159,3 +156,4 @@ workflows:
           args: "--new-from-rev origin/master"
       - test
       - mod-tidy-check
+      - build-all
