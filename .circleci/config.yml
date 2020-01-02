@@ -109,9 +109,6 @@ jobs:
             - "~/go/src/github.com"
             - "~/go/src/golang.org"
 
-  test-short:
-    <<: *test
-
   lint: &lint
     description: |
       Run golangci-lint.
@@ -159,7 +156,5 @@ workflows:
       - lint-changes:
           args: "--new-from-rev origin/master"
       - test
-      - test-short:
-          go-test-flags: "--timeout 10m --short"
       - mod-tidy-check
       - build-all
