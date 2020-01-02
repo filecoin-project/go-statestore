@@ -6,7 +6,6 @@ executors:
   golang:
     docker:
       - image: circleci/golang:1.13
-    resource_class: 2xlarge
 
 commands:
   install-deps:
