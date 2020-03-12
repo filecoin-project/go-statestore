@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/filecoin-project/go-cbor-util"
+	cborutil "github.com/filecoin-project/go-cbor-util"
 	"github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
 	"go.uber.org/multierr"
@@ -90,6 +90,45 @@ func (st *StateStore) List(out interface{}) error {
 		}
 
 		rout.Elem().Set(reflect.Append(rout.Elem(), elem.Elem()))
+	}
+
+	return nil
+}
+
+// out: *map[datastore.Key]T
+func (st *StateStore) ListByKey(out interface{}) error {
+	res, err := st.ds.Query(query.Query{})
+	if err != nil {
+		return err
+	}
+	defer res.Close()
+
+	outT := reflect.TypeOf(out).Elem().Elem()
+	keyT := reflect.TypeOf(out).Elem().Key()
+	if !reflect.TypeOf(datastore.Key{}).AssignableTo(keyT) {
+		return xerrors.New("Incorrect key type")
+	}
+	rout := reflect.ValueOf(out)
+	rout.Elem().Set(reflect.MakeMap(reflect.MapOf(keyT, outT)))
+	var errs error
+
+	for {
+		res, ok := res.NextSync()
+		if !ok {
+			break
+		}
+		if res.Error != nil {
+			return res.Error
+		}
+
+		elem := reflect.New(outT)
+		err := cborutil.ReadCborRPC(bytes.NewReader(res.Value), elem.Interface())
+		if err != nil {
+			errs = multierr.Append(errs, xerrors.Errorf("decoding state for key '%s': %w", res.Key, err))
+			continue
+		}
+
+		rout.Elem().SetMapIndex(reflect.ValueOf(datastore.NewKey(res.Key)), elem.Elem())
 	}
 
 	return nil
