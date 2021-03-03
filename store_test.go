@@ -57,7 +57,7 @@ func TestList(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	st := &StateStore{ds: ds}
+	st := &DsStateStore{ds: ds}
 
 	var out []Flarp
 	if err := st.List(&out); err != nil {

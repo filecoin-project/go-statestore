@@ -10,12 +10,20 @@ import (
 	"golang.org/x/xerrors"
 )
 
-type StoredState struct {
+type StoredState interface {
+	End() error
+	Get(out cbg.CBORUnmarshaler) error
+	Mutate(mutator interface{}) error
+}
+
+var _ StoredState = (*DsStoredState)(nil)
+
+type DsStoredState struct {
 	ds   datastore.Datastore
 	name datastore.Key
 }
 
-func (st *StoredState) End() error {
+func (st *DsStoredState) End() error {
 	has, err := st.ds.Has(st.name)
 	if err != nil {
 		return err
@@ -32,7 +40,7 @@ func (st *StoredState) End() error {
 	return nil
 }
 
-func (st *StoredState) Get(out cbg.CBORUnmarshaler) error {
+func (st *DsStoredState) Get(out cbg.CBORUnmarshaler) error {
 	val, err := st.ds.Get(st.name)
 	if err != nil {
 		if xerrors.Is(err, datastore.ErrNotFound) {
@@ -45,11 +53,11 @@ func (st *StoredState) Get(out cbg.CBORUnmarshaler) error {
 }
 
 // mutator func(*T) error
-func (st *StoredState) Mutate(mutator interface{}) error {
+func (st *DsStoredState) Mutate(mutator interface{}) error {
 	return st.mutate(cborMutator(mutator))
 }
 
-func (st *StoredState) mutate(mutator func([]byte) ([]byte, error)) error {
+func (st *DsStoredState) mutate(mutator func([]byte) ([]byte, error)) error {
 	has, err := st.ds.Has(st.name)
 	if err != nil {
 		return err

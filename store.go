@@ -12,12 +12,21 @@ import (
 	"golang.org/x/xerrors"
 )
 
-type StateStore struct {
+type StateStore interface {
+	Begin(i interface{}, state interface{}) error
+	Get(i interface{}) *DsStoredState
+	Has(i interface{}) (bool, error)
+	List(out interface{}) error
+}
+
+var _ StateStore = (*DsStateStore)(nil)
+
+type DsStateStore struct {
 	ds datastore.Datastore
 }
 
-func New(ds datastore.Datastore) *StateStore {
-	return &StateStore{ds: ds}
+func NewDsStateStore(ds datastore.Datastore) *DsStateStore {
+	return &DsStateStore{ds: ds}
 }
 
 func ToKey(k interface{}) datastore.Key {
@@ -31,7 +40,7 @@ func ToKey(k interface{}) datastore.Key {
 	}
 }
 
-func (st *StateStore) Begin(i interface{}, state interface{}) error {
+func (st *DsStateStore) Begin(i interface{}, state interface{}) error {
 	k := ToKey(i)
 	has, err := st.ds.Has(k)
 	if err != nil {
@@ -49,19 +58,19 @@ func (st *StateStore) Begin(i interface{}, state interface{}) error {
 	return st.ds.Put(k, b)
 }
 
-func (st *StateStore) Get(i interface{}) *StoredState {
-	return &StoredState{
+func (st *DsStateStore) Get(i interface{}) *DsStoredState {
+	return &DsStoredState{
 		ds:   st.ds,
 		name: ToKey(i),
 	}
 }
 
-func (st *StateStore) Has(i interface{}) (bool, error) {
+func (st *DsStateStore) Has(i interface{}) (bool, error) {
 	return st.ds.Has(ToKey(i))
 }
 
 // out: *[]T
-func (st *StateStore) List(out interface{}) error {
+func (st *DsStateStore) List(out interface{}) error {
 	res, err := st.ds.Query(query.Query{})
 	if err != nil {
 		return err
