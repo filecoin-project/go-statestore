@@ -68,6 +68,10 @@ func (st *StoredState) mutate(mutator func([]byte) ([]byte, error)) error {
 		return err
 	}
 
+	if bytes.Equal(mutated, cur) {
+		return nil
+	}
+
 	return st.ds.Put(st.name, mutated)
 }
 
