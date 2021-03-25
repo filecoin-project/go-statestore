@@ -92,5 +92,5 @@ func (st *StateStore) List(out interface{}) error {
 		rout.Elem().Set(reflect.Append(rout.Elem(), elem.Elem()))
 	}
 
-	return nil
+	return errs
 }
