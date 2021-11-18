@@ -2,10 +2,11 @@ package statestore
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"reflect"
 
-	"github.com/filecoin-project/go-cbor-util"
+	cborutil "github.com/filecoin-project/go-cbor-util"
 	"github.com/ipfs/go-datastore"
 	"github.com/ipfs/go-datastore/query"
 	"go.uber.org/multierr"
@@ -33,7 +34,7 @@ func ToKey(k interface{}) datastore.Key {
 
 func (st *StateStore) Begin(i interface{}, state interface{}) error {
 	k := ToKey(i)
-	has, err := st.ds.Has(k)
+	has, err := st.ds.Has(context.TODO(), k)
 	if err != nil {
 		return err
 	}
@@ -46,7 +47,7 @@ func (st *StateStore) Begin(i interface{}, state interface{}) error {
 		return err
 	}
 
-	return st.ds.Put(k, b)
+	return st.ds.Put(context.TODO(), k, b)
 }
 
 func (st *StateStore) Get(i interface{}) *StoredState {
@@ -57,12 +58,12 @@ func (st *StateStore) Get(i interface{}) *StoredState {
 }
 
 func (st *StateStore) Has(i interface{}) (bool, error) {
-	return st.ds.Has(ToKey(i))
+	return st.ds.Has(context.TODO(), ToKey(i))
 }
 
 // out: *[]T
 func (st *StateStore) List(out interface{}) error {
-	res, err := st.ds.Query(query.Query{})
+	res, err := st.ds.Query(context.TODO(), query.Query{})
 	if err != nil {
 		return err
 	}

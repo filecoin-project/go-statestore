@@ -1,11 +1,12 @@
 package statestore
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"testing"
 
-	"github.com/filecoin-project/go-cbor-util"
+	cborutil "github.com/filecoin-project/go-cbor-util"
 	"github.com/ipfs/go-datastore"
 )
 
@@ -44,7 +45,7 @@ func TestList(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := ds.Put(datastore.NewKey("/2"), e1); err != nil {
+	if err := ds.Put(context.TODO(), datastore.NewKey("/2"), e1); err != nil {
 		t.Fatal(err)
 	}
 
@@ -53,7 +54,7 @@ func TestList(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := ds.Put(datastore.NewKey("/3"), e2); err != nil {
+	if err := ds.Put(context.TODO(), datastore.NewKey("/3"), e2); err != nil {
 		t.Fatal(err)
 	}
 
