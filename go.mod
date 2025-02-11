@@ -15,8 +15,7 @@ require (
 	github.com/warpfork/go-wish v0.0.0-20190328234359-8b3e70f8e830 // indirect
 	github.com/whyrusleeping/cbor-gen v0.0.0-20191216205031-b047b6acb3c0
 	go.uber.org/multierr v1.5.0
-	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550 // indirect
-	golang.org/x/sys v0.0.0-20190826190057-c7b8b68b1456 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
 	gopkg.in/yaml.v2 v2.2.4 // indirect
 )
