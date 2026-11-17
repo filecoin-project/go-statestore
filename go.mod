@@ -4,14 +4,14 @@ go 1.26.0
 
 require (
 	github.com/filecoin-project/go-cbor-util v0.0.2
-	github.com/ipfs/go-datastore v0.5.0
+	github.com/ipfs/go-datastore v0.9.2
 	github.com/whyrusleeping/cbor-gen v0.3.1
 	go.uber.org/multierr v1.11.0
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da
 )
 
 require (
-	github.com/google/uuid v1.1.1 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20190812055157-5d271430af9f // indirect
 	github.com/ipfs/go-block-format v0.1.2 // indirect
 	github.com/ipfs/go-cid v0.4.1 // indirect
@@ -19,7 +19,6 @@ require (
 	github.com/ipfs/go-ipld-cbor v0.2.0 // indirect
 	github.com/ipfs/go-ipld-format v0.6.0 // indirect
 	github.com/ipfs/go-log/v2 v2.5.1 // indirect
-	github.com/jbenet/goprocess v0.1.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/minio/sha256-simd v1.0.0 // indirect
