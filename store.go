@@ -61,7 +61,8 @@ func (st *StateStore) Has(i interface{}) (bool, error) {
 	return st.ds.Has(context.TODO(), ToKey(i))
 }
 
-// out: *[]T
+// List appends decoded states to out, which must be a pointer to a slice.
+// Decoding failures are combined in the returned error; valid states are retained.
 func (st *StateStore) List(out interface{}) error {
 	res, err := st.ds.Query(context.TODO(), query.Query{})
 	if err != nil {
