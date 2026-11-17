@@ -1,6 +1,6 @@
 module github.com/filecoin-project/go-statestore
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/filecoin-project/go-cbor-util v0.0.0-20191219014500-08c40a1e63a2
