@@ -3,6 +3,7 @@ package statestore
 import (
 	"bytes"
 	"context"
+	"errors"
 	"reflect"
 
 	cborutil "github.com/filecoin-project/go-cbor-util"
@@ -36,7 +37,7 @@ func (st *StoredState) End() error {
 func (st *StoredState) Get(out cbg.CBORUnmarshaler) error {
 	val, err := st.ds.Get(context.TODO(), st.name)
 	if err != nil {
-		if xerrors.Is(err, datastore.ErrNotFound) {
+		if errors.Is(err, datastore.ErrNotFound) {
 			return xerrors.Errorf("No state for %s: %w", st.name, err)
 		}
 		return err

@@ -2,12 +2,14 @@ package statestore
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"testing"
 
 	cborutil "github.com/filecoin-project/go-cbor-util"
 	"github.com/ipfs/go-datastore"
+	cbg "github.com/whyrusleeping/cbor-gen"
 )
 
 type Flarp struct {
@@ -80,5 +82,29 @@ func TestList(t *testing.T) {
 
 	if !blargs[fmt.Sprintf("%d", x2)] {
 		t.Fatalf("wrong data (missing Flarp#Blarg() == %d)", x2)
+	}
+}
+
+func TestListDecodeErrors(t *testing.T) {
+	ds := datastore.NewMapDatastore()
+	for key, data := range map[string][]byte{
+		"/valid":     {0x18, 0x2a},
+		"/empty":     {},
+		"/truncated": {0x19, 0x00},
+	} {
+		if err := ds.Put(context.Background(), datastore.NewKey(key), data); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	var out []cbg.CborInt
+	err := New(ds).List(&out)
+	for _, target := range []error{io.EOF, io.ErrUnexpectedEOF} {
+		if !errors.Is(err, target) {
+			t.Errorf("expected List error to contain %v, got %v", target, err)
+		}
+	}
+	if len(out) != 1 || out[0] != 42 {
+		t.Fatalf("expected valid state [42], got %v", out)
 	}
 }
