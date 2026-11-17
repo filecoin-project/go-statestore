@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	github.com/filecoin-project/go-cbor-util v0.0.2
 	github.com/ipfs/go-datastore v0.5.0
-	github.com/whyrusleeping/cbor-gen v0.1.2
+	github.com/whyrusleeping/cbor-gen v0.3.1
 	go.uber.org/multierr v1.6.0
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1
 )
