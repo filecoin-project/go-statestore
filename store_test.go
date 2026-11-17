@@ -2,6 +2,7 @@ package statestore
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"testing"
@@ -9,7 +10,6 @@ import (
 	cborutil "github.com/filecoin-project/go-cbor-util"
 	"github.com/ipfs/go-datastore"
 	cbg "github.com/whyrusleeping/cbor-gen"
-	"golang.org/x/xerrors"
 )
 
 type Flarp struct {
@@ -100,7 +100,7 @@ func TestListDecodeErrors(t *testing.T) {
 	var out []cbg.CborInt
 	err := New(ds).List(&out)
 	for _, target := range []error{io.EOF, io.ErrUnexpectedEOF} {
-		if !xerrors.Is(err, target) {
+		if !errors.Is(err, target) {
 			t.Errorf("expected List error to contain %v, got %v", target, err)
 		}
 	}
